@@ -1,12 +1,11 @@
 package com.orange.book.bookContent.util;
 
-import com.books.crawler.bookContent.bean.BookContentBean;
-import com.books.crawler.bookContent.service.BookContentService;
-import com.books.crawler.httpClient.HttpClientUtils;
-import com.books.crawler.httpClient.Page;
-import com.books.crawler.httpClient.PageParserTool;
-import com.books.crawler.mail.bean.MailBean;
-import com.books.crawler.mail.service.SendMailService;
+
+import com.orange.book.bookContent.bean.BookContentBean;
+import com.orange.book.bookContent.service.BookContentService;
+import com.orange.book.httpClient.HttpClientUtils;
+import com.orange.book.httpClient.Page;
+import com.orange.book.httpClient.PageParserTool;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +23,7 @@ public class BookContentUtil {
 
 	@Autowired
 	private BookContentService bookContentService;
-	@Autowired
-	private SendMailService sendMailService;
+
 
 	/**
 	 * 根据小说章节地址获取小说信息
@@ -97,10 +95,10 @@ public class BookContentUtil {
 				log.info(url + "获取到新章节===>" + content.toString());
 				bookContentService.addBook(content);
 				if (mailFlag.equals("0")) { // 是否发送邮件标志（1：发送，0：不发送）
-					MailBean mail = new MailBean();
+					/*MailBean mail = new MailBean();
 					mail.setContent(em.html());
 					mail.setSubject(content.getTitle());
-					sendMailService.sendHtmlMail(mail);
+					sendMailService.sendHtmlMail(mail);*/
 				}
 
 			}
@@ -119,7 +117,7 @@ public class BookContentUtil {
 		try {
 			BookContentBean content = new BookContentBean();
 			Page pageCenter = HttpClientUtils.httpGet(url);
-			Elements em = PageParserTool.select(pageCenter, "div[id=content]");
+			Elements em = PageParserTool.select(pageCenter, "div[id=book_text]");
 			if (em == null || em.size() == 0) {
 				log.error(url + "访问URL获取文章内容失败");
 				return;
@@ -193,10 +191,10 @@ public class BookContentUtil {
 			if (beanById == null) {
 				log.info(url + "获取到新章节===>" + content.toString());
 				bookContentService.addBook(content);
-				MailBean mail = new MailBean();
+				/*MailBean mail = new MailBean();
 				mail.setContent(em.html());
 				mail.setSubject(content.getTitle());
-				sendMailService.sendHtmlMail(mail);
+				sendMailService.sendHtmlMail(mail);*/
 			}
 		} catch (Exception e) {
 			log.error("请求错误" + url, e.getMessage());

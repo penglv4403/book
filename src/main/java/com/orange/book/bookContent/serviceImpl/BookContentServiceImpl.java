@@ -1,17 +1,11 @@
 package com.orange.book.bookContent.serviceImpl;
 
 
-import com.books.crawler.bookContent.bean.BookContentBean;
-import com.books.crawler.bookContent.dao.BookContentMapper;
-import com.books.crawler.bookContent.service.BookContentService;
-
-import com.books.crawler.mail.service.SendMailService;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.orange.book.bookContent.bean.BookContentBean;
+import com.orange.book.bookContent.dao.BookContentMapper;
+import com.orange.book.bookContent.service.BookContentService;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

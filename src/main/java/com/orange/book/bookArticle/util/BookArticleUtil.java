@@ -44,7 +44,7 @@ public class BookArticleUtil {
             log.error("访问页面404" + url);
             return contentList;
         }
-        Elements list = PageParserTool.select(bookArticle, "div[id=list]");
+        Elements list = PageParserTool.select(bookArticle, "ul[id=chapterlist]");
         if (list == null || list.size() == 0) {
             log.error("本地址非章节目录地址：" + url);
             return contentList;
@@ -72,12 +72,12 @@ public class BookArticleUtil {
         bookArticleBean.setBookType(category.attr("content"));
         bookArticleBean.setBookUrl(url);
 
-        if (bookArticleService.getBeanById(bookId) != null) {
+        /*if (bookArticleService.getBeanById(bookId) != null) {
             log.info("数据库已存储该路径" + url);
         } else {
             log.info("获取到新小说" + url+"/n"+bookArticleBean.toString());
             bookArticleService.addArticle(bookArticleBean);
-        }
+        }*/
         contentList = new ArrayList<String>();
         Iterator<Element> iterator = em.iterator();
         while (iterator.hasNext()) {

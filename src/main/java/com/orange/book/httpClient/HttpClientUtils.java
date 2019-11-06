@@ -6,15 +6,8 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.List;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
+
+import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -27,7 +20,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.books.crawler.task.UpdateJob;
+
 
 public class HttpClientUtils {
     private static final Logger log = LoggerFactory.getLogger(HttpClientUtils.class);
@@ -52,12 +45,9 @@ public class HttpClientUtils {
                 responseStr = EntityUtils.toString(entity, "utf-8");
             // 4.处理 HTTP 响应内容
             System.out.println(responseStr);
-        } catch (HttpException e) {
+        } catch (Exception e) {
             // 发生致命的异常，可能是协议不对或者返回的内容有问题
             System.out.println("Please check your provided http address!");
-            e.printStackTrace();
-        } catch (IOException e) {
-            // 发生网络异常
             e.printStackTrace();
         } finally {
             // 释放连接

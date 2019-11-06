@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.orange.book.bookContent.bean.BookContentBean">
+	<resultMap id="BaseResultMap"
+		type="com.orange.book.bookContent.bean.BookContentBean">
+		<result column="content_id" property="contentId" jdbcType="VARCHAR" />
+		<result column="article_id" property="articleId" jdbcType="VARCHAR" />
+		<result column="chapter_id" property="chapterId" jdbcType="VARCHAR" />
+		<result column="index_page" property="indexPage" jdbcType="VARCHAR" />
+		<result column="next_page" property="nextPage" jdbcType="VARCHAR" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="content_url" property="contentUrl" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="DATE" />
+		<result column="update_date" property="updateDate" jdbcType="DATE" />
+		<result column="bak1" property="bak1" jdbcType="VARCHAR" />
+		<result column="bak2" property="bak2" jdbcType="VARCHAR" />
+		<result column="bak3" property="bak3" jdbcType="VARCHAR" />
+		<result column="chapter_num" property="chapterNum" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="ResultMapWithBLOBs"
+		type="com.orange.book.bookContent.bean.BookContentBean" extends="BaseResultMap">
+		<result column="content" property="content" jdbcType="LONGVARCHAR" />
+	</resultMap>
+
+
+	<sql id="Blob_Column_List">
+		content_id,article_id,chapter_id,index_page,chapter_num,next_page,title,cc.content,content_url,create_date,update_date,bak1,bak2,bak3
+	</sql>
+
+	<update id="updateChines2Num" parameterType="com.orange.book.bookContent.bean.BookContentBean">
+		update book_content
+		set chapter_num =#{chapterNum} where content_id
+		=#{contentId}
+
+	</update>
+	<select id="selectById" resultMap="BaseResultMap">
+		select
+		*
+		from book_content c ,book_content_chapter cc
+		where 1 = 1 and c.content_id = cc.content_id and c.content_id =#{contentId}
+	</select>
+	<select id="getBeanByURL" resultMap="BaseResultMap">
+		select * from book_content
+		where 1 = 1
+		and content_url =#{url}
+	</select>
+	<select id="getBeanList" resultMap="BaseResultMap">
+		select * from book_content
+		where 1 = 1
+	</select>
+	<insert id="insertArticleContent" parameterType="com.orange.book.bookContent.bean.BookContentBean">
+		insert into
+		book_article_content (article_id,chapter_id)
+		values
+		(#{articleId,jdbcType=VARCHAR}, #{chapterId,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertContent" parameterType="com.orange.book.bookContent.bean.BookContentBean">
+		insert into
+		book_content_chapter(content_id,content)
+		values(#{contentId,jdbcType=VARCHAR},#{content,jdbcType=LONGVARCHAR})
+	</insert>
+	<insert id="insert" parameterType="com.orange.book.bookContent.bean.BookContentBean">
+		insert into book_content
+		(content_id, article_id, chapter_id,
+		index_page, next_page, title,
+		content_url, create_date, update_date,
+		bak1, bak2, bak3,chapter_num
+		)
+		values (#{contentId,jdbcType=VARCHAR}, #{articleId,jdbcType=VARCHAR},
+		#{chapterId,jdbcType=VARCHAR},
+		#{indexPage,jdbcType=VARCHAR},
+		#{nextPage,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
+		#{contentUrl,jdbcType=VARCHAR}, #{createDate,jdbcType=DATE},
+		#{updateDate,jdbcType=DATE},
+		#{bak1,jdbcType=VARCHAR},
+		#{bak2,jdbcType=VARCHAR}, #{bak3,jdbcType=VARCHAR},
+
+		#{chapterNum,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.orange.book.bookContent.bean.BookContentBean">
+		insert into book_content
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="contentId != null">
+				content_id,
+			</if>
+			<if test="articleId != null">
+				article_id,
+			</if>
+			<if test="chapterId != null">
+				chapter_id,
+			</if>
+			<if test="indexPage != null">
+				index_page,
+			</if>
+			<if test="nextPage != null">
+				next_page,
+			</if>
+			<if test="title != null">
+				title,
+			</if>
+			<if test="contentUrl != null">
+				content_url,
+			</if>
+			<if test="createDate != null">
+				create_date,
+			</if>
+			<if test="updateDate != null">
+				update_date,
+			</if>
+			<if test="bak1 != null">
+				bak1,
+			</if>
+			<if test="bak2 != null">
+				bak2,
+			</if>
+			<if test="bak3 != null">
+				bak3,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="contentId != null">
+				#{contentId,jdbcType=VARCHAR},
+			</if>
+			<if test="articleId != null">
+				#{articleId,jdbcType=VARCHAR},
+			</if>
+			<if test="chapterId != null">
+				#{chapterId,jdbcType=VARCHAR},
+			</if>
+			<if test="indexPage != null">
+				#{indexPage,jdbcType=VARCHAR},
+			</if>
+			<if test="nextPage != null">
+				#{nextPage,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="contentUrl != null">
+				#{contentUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=DATE},
+			</if>
+			<if test="updateDate != null">
+				#{updateDate,jdbcType=DATE},
+			</if>
+			<if test="bak1 != null">
+				#{bak1,jdbcType=VARCHAR},
+			</if>
+			<if test="bak2 != null">
+				#{bak2,jdbcType=VARCHAR},
+			</if>
+			<if test="bak3 != null">
+				#{bak3,jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=LONGVARCHAR},
+			</if>
+		</trim>
+	</insert>
+</mapper>

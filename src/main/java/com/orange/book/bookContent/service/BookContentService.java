@@ -1,6 +1,6 @@
 package com.orange.book.bookContent.service;
 
-import com.books.crawler.bookContent.bean.BookContentBean;
+import com.orange.book.bookContent.bean.BookContentBean;
 
 import java.util.List;
 
