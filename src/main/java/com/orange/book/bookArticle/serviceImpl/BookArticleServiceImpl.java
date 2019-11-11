@@ -13,8 +13,7 @@ import com.orange.book.bookArticle.service.BookArticleService;
 import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+
 import org.springframework.stereotype.Service;
 
 
@@ -27,7 +26,6 @@ public class BookArticleServiceImpl implements BookArticleService {
 	private BookArticleMapper bookArticleMapper;
 
 	@Override
-	@CachePut(value="bookArticleCatch",key="#bookArticleBean.getBookId()")
 	public BookArticleBean addArticle(BookArticleBean bookArticleBean) {
 		bookArticleMapper.insert(bookArticleBean);
 		return bookArticleBean;
@@ -47,7 +45,6 @@ public class BookArticleServiceImpl implements BookArticleService {
 	}
 	
 	@Override
-	@Cacheable(value="bookArticleCatch",key="#id",unless="#result == null")
 	public BookArticleBean getBeanById(String id) {
 		BookArticleBean bookArticleBean = null;
 		bookArticleBean = bookArticleMapper.getBeanById(id);

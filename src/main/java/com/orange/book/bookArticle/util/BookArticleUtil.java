@@ -72,12 +72,12 @@ public class BookArticleUtil {
         bookArticleBean.setBookType(category.attr("content"));
         bookArticleBean.setBookUrl(url);
 
-        /*if (bookArticleService.getBeanById(bookId) != null) {
+        if (bookArticleService.getBeanById(bookId) != null) {
             log.info("数据库已存储该路径" + url);
         } else {
             log.info("获取到新小说" + url+"/n"+bookArticleBean.toString());
             bookArticleService.addArticle(bookArticleBean);
-        }*/
+        }
         contentList = new ArrayList<String>();
         Iterator<Element> iterator = em.iterator();
         while (iterator.hasNext()) {
