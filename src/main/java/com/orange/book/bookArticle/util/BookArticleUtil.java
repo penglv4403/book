@@ -30,29 +30,28 @@ public class BookArticleUtil {
     /*
      * 根据URL获取目录
      */
-    public List<String> getArticle(String url) {
+    public boolean getArticle(String url) {
         BookArticleBean bookArticleBean = new BookArticleBean();
-        List<String> contentList = null;
         log.info("获取文章" + url);
         Page bookArticle = HttpClientUtils.httpGet(url);
         if (bookArticle == null) {
             log.error("获取小说失败" + url);
-            return contentList;
+            return false;
         }
         Elements error = PageParserTool.select(bookArticle, "div[class=mod-404]");
         if (error != null && error.size() != 0) {
             log.error("访问页面404" + url);
-            return contentList;
+            return false;
         }
         Elements list = PageParserTool.select(bookArticle, "ul[id=chapterlist]");
         if (list == null || list.size() == 0) {
             log.error("本地址非章节目录地址：" + url);
-            return contentList;
+            return false;
         }
         Elements em = PageParserTool.select(bookArticle, "a");
         if (em == null || em.size() == 0) {
             log.error("待访问地址为空" + url);
-            return contentList;
+            return false;
         }
 
         Elements author = PageParserTool.select(bookArticle, "meta[property=og:novel:author]");
@@ -77,8 +76,17 @@ public class BookArticleUtil {
         } else {
             log.info("获取到新小说" + url+"/n"+bookArticleBean.toString());
             bookArticleService.addArticle(bookArticleBean);
+            return true;
         }
-        contentList = new ArrayList<String>();
+
+        return false;
+    }
+    public List<String> getChapter(String url){
+        Page bookArticle = HttpClientUtils.httpGet(url);
+        List<String> contentList = new ArrayList<String>();
+        Elements em = PageParserTool.select(bookArticle, "a");
+        Elements chapterlist = PageParserTool.select(bookArticle, "div[class=article_texttitleb]");
+        Elements a = chapterlist.select("a");
         Iterator<Element> iterator = em.iterator();
         while (iterator.hasNext()) {
             Element element = iterator.next();
@@ -91,5 +99,4 @@ public class BookArticleUtil {
         }
         return contentList;
     }
-
 }
