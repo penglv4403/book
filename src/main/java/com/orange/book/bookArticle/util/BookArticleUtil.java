@@ -3,6 +3,7 @@ package com.orange.book.bookArticle.util;
 
 
 import com.orange.book.bookArticle.bean.BookArticleBean;
+import com.orange.book.bookArticle.bean.BookArticleChapterBean;
 import com.orange.book.bookArticle.service.BookArticleService;
 import com.orange.book.httpClient.HttpClientUtils;
 import com.orange.book.httpClient.Page;
@@ -32,7 +33,7 @@ public class BookArticleUtil {
      */
     public boolean getArticle(String url) {
         BookArticleBean bookArticleBean = new BookArticleBean();
-        log.info("获取文章" + url);
+        log.info("获取地址" + url);
         Page bookArticle = HttpClientUtils.httpGet(url);
         if (bookArticle == null) {
             log.error("获取小说失败" + url);
@@ -43,7 +44,7 @@ public class BookArticleUtil {
             log.error("访问页面404" + url);
             return false;
         }
-        Elements list = PageParserTool.select(bookArticle, "ul[id=chapterlist]");
+        Elements list = PageParserTool.select(bookArticle, "div[id=list]");
         if (list == null || list.size() == 0) {
             log.error("本地址非章节目录地址：" + url);
             return false;
@@ -74,29 +75,46 @@ public class BookArticleUtil {
         if (bookArticleService.getBeanById(bookId) != null) {
             log.info("数据库已存储该路径" + url);
         } else {
-            log.info("获取到新小说" + url+"/n"+bookArticleBean.toString());
+            log.info("获取到新小说" + url+"\n"+bookArticleBean.toString());
             bookArticleService.addArticle(bookArticleBean);
+            getChapter(bookArticle,bookArticleBean);
             return true;
         }
 
         return false;
     }
-    public List<String> getChapter(String url){
-        Page bookArticle = HttpClientUtils.httpGet(url);
-        List<String> contentList = new ArrayList<String>();
-        Elements em = PageParserTool.select(bookArticle, "a");
-        Elements chapterlist = PageParserTool.select(bookArticle, "div[class=article_texttitleb]");
+    public void getChapter(Page bookArticle,BookArticleBean bookArticleBean){
+        Elements chapterlist = PageParserTool.select(bookArticle, "div[id=list]");
         Elements a = chapterlist.select("a");
-        Iterator<Element> iterator = em.iterator();
+        Iterator<Element> iterator = a.iterator();
+        List<BookArticleChapterBean> bookArticleChapterBeans = new ArrayList<BookArticleChapterBean> ();
+        int i = 0;
         while (iterator.hasNext()) {
             Element element = iterator.next();
             String href = "";
+            BookArticleChapterBean bookArticleChapterBean = new BookArticleChapterBean();
             if (element.hasAttr("href") && element.attr("href").contains(".html")
                     && !element.attr("href").contains("http")) {
                 href = element.attr("href"); // 取href值
-                contentList.add(href);
+                BookArticleBean beanById = bookArticleService.getBeanById(bookArticleBean.getBookId());
+                bookArticleChapterBean.setBookId(bookArticleBean.getBookId());
+                bookArticleChapterBean.setArticleSeqNo(String.valueOf(beanById.getSeqNo()));
+                bookArticleChapterBean.setBookContentUrl(href);
+                bookArticleChapterBean.setChapter(element.text());
+               // bookArticleService.insertChapter(bookArticleChapterBean);
+
+                i = i+1;
+                bookArticleChapterBeans.add(bookArticleChapterBean);
+
+                if(i == 100 ){
+                    bookArticleService.insertChapterList(bookArticleChapterBeans);
+                    bookArticleChapterBeans.clear();
+                    i = 0;
+                }
             }
         }
-        return contentList;
+        bookArticleService.insertChapterList(bookArticleChapterBeans);
+
+
     }
 }

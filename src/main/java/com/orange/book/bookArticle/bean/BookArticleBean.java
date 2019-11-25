@@ -11,7 +11,7 @@ public class BookArticleBean implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+    private int seqNo;
 	private String bookId;
 
     private String bookType;
@@ -26,6 +26,14 @@ public class BookArticleBean implements Serializable{
     
     private String mailFlag;
     private String spiderFlag;
+
+    public int getSeqNo() {
+        return seqNo;
+    }
+
+    public void setSeqNo(int seqNo) {
+        this.seqNo = seqNo;
+    }
 
     public String getBookId() {
         return bookId;

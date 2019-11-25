@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.orange.book.bookArticle.dao.BookArticleMapper">
-	<resultMap id="BaseResultMap"
-			   type="com.orange.book.bookArticle.bean.BookArticleBean">
-		<result column="book_id" property="bookId" jdbcType="VARCHAR" />
-		<result column="book_type" property="bookType" jdbcType="VARCHAR" />
-		<result column="book_url" property="bookUrl" jdbcType="VARCHAR" />
-		<result column="book_name" property="bookName" jdbcType="VARCHAR" />
-		<result column="book_author" property="bookAuthor" jdbcType="VARCHAR" />
-		<result column="article_introduction" property="articleIntroduction"
-				jdbcType="VARCHAR" />
-		<result column="mail_flag" property="mailFlag" jdbcType="VARCHAR" />
-		<result column="spider_flag" property="spiderFlag" jdbcType="VARCHAR" />
-	</resultMap>
-	<select id="getBeanById" resultMap="BaseResultMap">
+    <resultMap id="BaseResultMap"
+               type="com.orange.book.bookArticle.bean.BookArticleBean">
+        <result column="seq_no" property="seqNo" jdbcType="INTEGER"/>
+        <result column="book_id" property="bookId" jdbcType="VARCHAR"/>
+        <result column="book_type" property="bookType" jdbcType="VARCHAR"/>
+        <result column="book_url" property="bookUrl" jdbcType="VARCHAR"/>
+        <result column="book_name" property="bookName" jdbcType="VARCHAR"/>
+        <result column="book_author" property="bookAuthor" jdbcType="VARCHAR"/>
+        <result column="article_introduction" property="articleIntroduction" jdbcType="VARCHAR"/>
+        <result column="mail_flag" property="mailFlag" jdbcType="VARCHAR"/>
+        <result column="spider_flag" property="spiderFlag" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getBeanById" resultMap="BaseResultMap">
 		select * from book_article
 		where 1 = 1
 		and book_id =#{book_id}
 	</select>
 
-	<select id="getBeanList" resultMap="BaseResultMap">
+    <select id="getBeanList" resultMap="BaseResultMap">
 		select * from book_article
 		where 1 = 1
 	</select>
-	<select id="getBeanByUrl" resultMap="BaseResultMap">
+    <select id="getBeanByUrl" resultMap="BaseResultMap">
 		select * from book_article
 		where 1 = 1
 		and book_url=#{url}
 	</select>
 
 
-	<insert id="insert" parameterType="com.orange.book.bookArticle.bean.BookArticleBean">
+    <insert id="insert" parameterType="com.orange.book.bookArticle.bean.BookArticleBean">
 		insert into book_article
 		(book_id, book_type, book_url,
 		book_name, book_author,
@@ -43,47 +43,84 @@
 		#{articleIntroduction,jdbcType=VARCHAR}, '1', '1'
 		)
 	</insert>
-	<insert id="insertSelective" parameterType="com.orange.book.bookArticle.bean.BookArticleBean">
-		insert into book_article
-		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="bookId != null">
-				book_id,
-			</if>
-			<if test="bookType != null">
-				book_type,
-			</if>
-			<if test="bookUrl != null">
-				book_url,
-			</if>
-			<if test="bookName != null">
-				book_name,
-			</if>
-			<if test="bookAuthor != null">
-				book_author,
-			</if>
-			<if test="articleIntroduction != null">
-				article_introduction,
-			</if>
-		</trim>
-		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="bookId != null">
-				#{bookId,jdbcType=VARCHAR},
-			</if>
-			<if test="bookType != null">
-				#{bookType,jdbcType=VARCHAR},
-			</if>
-			<if test="bookUrl != null">
-				#{bookUrl,jdbcType=VARCHAR},
-			</if>
-			<if test="bookName != null">
-				#{bookName,jdbcType=VARCHAR},
-			</if>
-			<if test="bookAuthor != null">
-				#{bookAuthor,jdbcType=VARCHAR},
-			</if>
-			<if test="articleIntroduction != null">
-				#{articleIntroduction,jdbcType=VARCHAR},
-			</if>
-		</trim>
-	</insert>
+    <insert id="insertSelective" parameterType="com.orange.book.bookArticle.bean.BookArticleBean">
+        insert into book_article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bookId != null">
+                book_id,
+            </if>
+            <if test="bookType != null">
+                book_type,
+            </if>
+            <if test="bookUrl != null">
+                book_url,
+            </if>
+            <if test="bookName != null">
+                book_name,
+            </if>
+            <if test="bookAuthor != null">
+                book_author,
+            </if>
+            <if test="articleIntroduction != null">
+                article_introduction,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bookId != null">
+                #{bookId,jdbcType=VARCHAR},
+            </if>
+            <if test="bookType != null">
+                #{bookType,jdbcType=VARCHAR},
+            </if>
+            <if test="bookUrl != null">
+                #{bookUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="bookName != null">
+                #{bookName,jdbcType=VARCHAR},
+            </if>
+            <if test="bookAuthor != null">
+                #{bookAuthor,jdbcType=VARCHAR},
+            </if>
+            <if test="articleIntroduction != null">
+                #{articleIntroduction,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertChapter" parameterType="com.orange.book.bookArticle.bean.BookArticleChapterBean">
+        insert into book_article_chapter
+        (
+        article_seq_no,
+        book_id,
+        chapter,
+        book_content_url
+        )
+        values
+
+            (
+            #{articleSeqNo,jdbcType=VARCHAR},
+            #{bookId,jdbcType=VARCHAR},
+            #{chapter,jdbcType=VARCHAR},
+            #{bookContentUrl,jdbcType=VARCHAR}
+            )
+
+    </insert>
+
+    <insert id="insertChapterList" parameterType="List">
+        insert into book_article_chapter
+        (
+        article_seq_no,
+        book_id,
+        chapter,
+        book_content_url
+        )
+        values
+        <foreach collection="list" item="e" open="" separator="," close="">
+            (
+            #{e.articleSeqNo,jdbcType=VARCHAR},
+            #{e.bookId,jdbcType=VARCHAR},
+            #{e.chapter,jdbcType=VARCHAR},
+            #{e.bookContentUrl,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
 </mapper>

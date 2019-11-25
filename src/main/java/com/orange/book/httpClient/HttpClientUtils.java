@@ -3,12 +3,14 @@ package com.orange.book.httpClient;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketTimeoutException;
 import java.util.List;
 
 
 import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -74,15 +76,27 @@ public class HttpClientUtils {
                 log.error("Method failed: " + response.getStatusLine());
             }
             HttpEntity entity = response.getEntity();
-            if (entity != null)
-                responseStr = EntityUtils.toString(entity, "GBK");
+            boolean isGzip = false;
             String contentType = "";
             for (Header header : response.getAllHeaders()) {
                 if (header.getName().equals("Content-Type")) {
                     contentType = header.getValue();
                 }
+                if(header.getValue().equals("gzip")){
+                    isGzip = true;
+                }
             }
-            page = new Page(responseStr.getBytes(), url, contentType); // 封装成为页面
+
+            if (entity != null){
+                if(isGzip){
+                    //需要进行gzip解压处理
+                    responseStr = EntityUtils.toString(new GzipDecompressingEntity(entity),"UTF-8");
+                }else{
+                    responseStr = EntityUtils.toString(entity,"UTF-8");
+                }
+
+            }
+            page = new Page(responseStr.getBytes("UTF-8"), url, contentType); // 封装成为页面
 
         } catch (Exception e) {
             e.printStackTrace();

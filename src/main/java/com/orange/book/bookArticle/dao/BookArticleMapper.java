@@ -3,6 +3,7 @@ package com.orange.book.bookArticle.dao;
 import java.util.List;
 
 import com.orange.book.bookArticle.bean.BookArticleBean;
+import com.orange.book.bookArticle.bean.BookArticleChapterBean;
 import org.apache.ibatis.annotations.Mapper;
 
 
@@ -17,4 +18,8 @@ public interface BookArticleMapper {
     List<BookArticleBean> getBeanList();
 
 	BookArticleBean getBeanByUrl(String url);
+
+	int insertChapterList(List<BookArticleChapterBean> list);
+
+	int insertChapter(BookArticleChapterBean bookArticleChapterBean);
 }
