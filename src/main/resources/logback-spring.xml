@@ -19,6 +19,7 @@
         </rollingPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>utf-8</charset>
         </encoder>
     </appender>
 
@@ -29,10 +30,15 @@
     </root>
 
     <!-- logback：包路径 -->
-    <logger name="com.orange.book" level="DEBUG" additivity="false"/>
+    <logger name="com.orange.book.httpClient" level="info" additivity="false">
+        <appender-ref ref="console" />
+        <appender-ref ref="file" />
+    </logger>
 
     <!--logback：类的全路径 -->
     <logger name="com.orange.book" level="DEBUG" additivity="false">
         <appender-ref ref="console"/>
+
+        <appender-ref ref="file" />
     </logger>
 </configuration>

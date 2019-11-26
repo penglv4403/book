@@ -2,6 +2,7 @@ package com.orange.book.bookArticle;
 
 
 import com.orange.book.BookApplication;
+import com.orange.book.bookArticle.dao.BookArticleMapper;
 import com.orange.book.bookArticle.serviceImpl.BookArticleServiceImpl;
 import com.orange.book.bookArticle.spider.BookArticleSpider;
 import com.orange.book.bookArticle.util.BookArticleUtil;
@@ -14,6 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+import java.util.Map;
+import java.util.Set;
 
 
 @SpringBootTest(classes = BookApplication.class)
@@ -31,9 +36,16 @@ public class Text {
 	private BookArticleServiceImpl bookArticleService;
 	@Autowired
 	private BookArticleSpider bookArticleSpider;
+    @Resource
+    private BookArticleMapper bookArticleMapper;
 	@Test
 	public void text() throws Exception {
 		log.info("123");
+		Map<String, Object> select = bookArticleMapper.select("2398");
+		Set<Map.Entry<String, Object>> entries = select.entrySet();
+		for (Map.Entry<String, Object> en: entries ) {
+			System.out.println(en.getKey() +en.getValue());
+		}
 		//bookArticleSpider.getArticle("http://www.xbiquge.la/xiaoshuodaquan/");
 	//bookContentUtil.getContent("https://www.xbikuge.com/203/203231/59270484.html");
 	//	bookArticleUtil.getArticle("https://www.xbikuge.com/0/10/");

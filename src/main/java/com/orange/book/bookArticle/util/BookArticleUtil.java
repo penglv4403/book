@@ -89,6 +89,7 @@ public class BookArticleUtil {
         Iterator<Element> iterator = a.iterator();
         List<BookArticleChapterBean> bookArticleChapterBeans = new ArrayList<BookArticleChapterBean> ();
         int i = 0;
+        BookArticleBean beanById = bookArticleService.getBeanById(bookArticleBean.getBookId());
         while (iterator.hasNext()) {
             Element element = iterator.next();
             String href = "";
@@ -96,7 +97,6 @@ public class BookArticleUtil {
             if (element.hasAttr("href") && element.attr("href").contains(".html")
                     && !element.attr("href").contains("http")) {
                 href = element.attr("href"); // 取href值
-                BookArticleBean beanById = bookArticleService.getBeanById(bookArticleBean.getBookId());
                 bookArticleChapterBean.setBookId(bookArticleBean.getBookId());
                 bookArticleChapterBean.setArticleSeqNo(String.valueOf(beanById.getSeqNo()));
                 bookArticleChapterBean.setBookContentUrl(href);

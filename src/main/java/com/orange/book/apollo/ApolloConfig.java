@@ -1,9 +1,6 @@
 package com.orange.book.apollo;
 
-import com.ctrip.framework.apollo.Config;
-import com.ctrip.framework.apollo.ConfigChangeListener;
-import com.ctrip.framework.apollo.ConfigService;
-import com.ctrip.framework.apollo.model.ConfigChange;
+
 
 public class ApolloConfig {
 

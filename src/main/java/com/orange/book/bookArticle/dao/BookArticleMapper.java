@@ -1,6 +1,7 @@
 package com.orange.book.bookArticle.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.orange.book.bookArticle.bean.BookArticleBean;
 import com.orange.book.bookArticle.bean.BookArticleChapterBean;
@@ -22,4 +23,6 @@ public interface BookArticleMapper {
 	int insertChapterList(List<BookArticleChapterBean> list);
 
 	int insertChapter(BookArticleChapterBean bookArticleChapterBean);
+
+	Map<String,Object> select(String url);
 }
