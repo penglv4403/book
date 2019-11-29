@@ -198,13 +198,20 @@ public class BookArticleUtil {
         List<BookArticleChapterBean> articleList = bookArticleService.getArticleList(bookArticleChapterBean);
         log.info("本地存储总数:"+articleList.size() +"<===>网络数据总数:"+bookArticleChapterBeans.size());
         if (articleList!= null && bookArticleChapterBeans !=null && articleList.size() != bookArticleChapterBeans.size()){
+            articleList.clear();
             BookArticleBean bookArticleBean = new BookArticleBean();
             bookArticleBean.setSeqNo(beanById.getSeqNo());
             bookArticleBean.setUpdateFlag("02");//更新中
             bookArticleBean.setUpdateDate(DateTimeUtil.getDateFormat("yyyyMMdd"));
             bookArticleService.update(bookArticleBean);
+            BookArticleChapterBean bookArticleChapter = new BookArticleChapterBean();
             for (BookArticleChapterBean book:bookArticleChapterBeans) {
-                if (!articleList.contains(book)){
+                bookArticleChapter.setBookId(book.getBookId());
+                bookArticleChapter.setArticleSeqNo(book.getArticleSeqNo());
+                bookArticleChapter.setBookContentUrl(book.getBookContentUrl());
+                bookArticleChapter.setChapter(book.getChapter());
+                List<BookArticleChapterBean> articleList1 = bookArticleService.getArticleList(bookArticleChapter);
+                if (articleList1.isEmpty()){
                     bookArticleService.insertChapter(book);
                 }
             }
@@ -221,7 +228,7 @@ public class BookArticleUtil {
      */
     @Async("asyncPromiseExecutor")
     public void updateArticle() {
-        List<BookArticleBean> beanList = bookArticleService.getBeanList();
+        List<BookArticleBean> beanList = bookArticleService.getBeanList(new BookArticleBean());
         for (BookArticleBean book:beanList) {
             //判断更新状态01：初始化，02:更新中 ，03：断更，04：已完结
             String updateFlag = book.getUpdateFlag();

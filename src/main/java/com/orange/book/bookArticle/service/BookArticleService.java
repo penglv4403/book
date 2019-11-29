@@ -9,7 +9,7 @@ import com.orange.book.bookArticle.bean.BookArticleChapterBean;
 public  interface BookArticleService {
 
     BookArticleBean addArticle(BookArticleBean book);
-    List<BookArticleBean> getBeanList();
+    List<BookArticleBean> getBeanList(BookArticleBean book);
     BookArticleBean getBeanById(String bookId);
 	BookArticleBean getBeanByUrl(String url);
     int insertChapterList(List<BookArticleChapterBean> list);

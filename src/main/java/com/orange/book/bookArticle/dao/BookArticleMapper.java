@@ -18,7 +18,7 @@ public interface BookArticleMapper {
 
     BookArticleBean getBeanById(String bookId);
 
-    List<BookArticleBean> getBeanList();
+    List<BookArticleBean> getBeanList(BookArticleBean book);
 
     BookArticleBean getBeanByUrl(String url);
 

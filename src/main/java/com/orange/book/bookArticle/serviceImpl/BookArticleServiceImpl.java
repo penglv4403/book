@@ -40,9 +40,9 @@ public class BookArticleServiceImpl implements BookArticleService {
     }
 
     @Override
-    public List<BookArticleBean> getBeanList() {
+    public List<BookArticleBean> getBeanList(BookArticleBean bookArticleBean) {
         List<BookArticleBean> bookArticleBeanList = null;
-        bookArticleBeanList = bookArticleMapper.getBeanList();
+        bookArticleBeanList = bookArticleMapper.getBeanList(bookArticleBean);
         return bookArticleBeanList;
     }
 

@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-       <!-- <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>-->
+        <!-- <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>-->
 
     </properties>
 
@@ -68,7 +68,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
@@ -105,32 +109,32 @@
             <version>4.12</version>
             <scope>compile</scope>
         </dependency>
-       <!-- <dependency>
-            <groupId>com.ctrip.framework.apollo</groupId>
-            <artifactId>apollo-client</artifactId>
-            <version>1.5.0</version>
-        </dependency>
+        <!-- <dependency>
+             <groupId>com.ctrip.framework.apollo</groupId>
+             <artifactId>apollo-client</artifactId>
+             <version>1.5.0</version>
+         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>-->
+         <dependency>
+             <groupId>org.springframework.cloud</groupId>
+             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+         </dependency>-->
 
 
     </dependencies>
 
 
-   <!-- <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>-->
+    <!-- <dependencyManagement>
+         <dependencies>
+             <dependency>
+                 <groupId>org.springframework.cloud</groupId>
+                 <artifactId>spring-cloud-dependencies</artifactId>
+                 <version>${spring-cloud.version}</version>
+                 <type>pom</type>
+                 <scope>import</scope>
+             </dependency>
+         </dependencies>
+     </dependencyManagement>-->
 
     <build>
         <plugins>

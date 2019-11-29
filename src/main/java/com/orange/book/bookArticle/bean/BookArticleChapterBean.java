@@ -42,4 +42,14 @@ public class BookArticleChapterBean implements Serializable {
     public void setBookContentUrl(String bookContentUrl) {
         this.bookContentUrl = bookContentUrl;
     }
+
+    @Override
+    public String toString() {
+        return "BookArticleChapterBean{" +
+                "articleSeqNo='" + articleSeqNo + '\'' +
+                ", bookId='" + bookId + '\'' +
+                ", chapter='" + chapter + '\'' +
+                ", bookContentUrl='" + bookContentUrl + '\'' +
+                '}';
+    }
 }

@@ -23,9 +23,19 @@
 		and book_id =#{book_id}
 	</select>
 
-    <select id="getBeanList" resultMap="BaseResultMap">
+    <select id="getBeanList" parameterType="com.orange.book.bookArticle.bean.BookArticleBean" resultMap="BaseResultMap">
 		select * from book_article
 		where 1 = 1
+        <if test="bookId != null and bookId != ''">
+            and book_id = #{bookId,jdbcType=VARCHAR}
+        </if>
+        <if test="bookName != null and bookName != ''">
+            and book_name = #{bookName,jdbcType=VARCHAR}
+        </if>
+
+        <if test="seqNo != null and seqNo != ''">
+            and seq_no = #{seqNo}
+        </if>
 	</select>
     <select id="getBeanByUrl" resultMap="BaseResultMap">
 		select * from book_article
