@@ -12,6 +12,10 @@
         <result column="article_introduction" property="articleIntroduction" jdbcType="VARCHAR"/>
         <result column="mail_flag" property="mailFlag" jdbcType="VARCHAR"/>
         <result column="spider_flag" property="spiderFlag" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="VARCHAR"/>
+        <result column="update_flag" property="updateFlag" jdbcType="VARCHAR"/>
+        <result column="bak" property="bak" jdbcType="VARCHAR"/>
     </resultMap>
     <select id="getBeanById" resultMap="BaseResultMap">
 		select * from book_article
@@ -28,19 +32,59 @@
 		where 1 = 1
 		and book_url=#{url}
 	</select>
-
+    <update id="update" parameterType="com.orange.book.bookArticle.bean.BookArticleBean">
+        update book_article
+        <set>
+            <if test="bookId != null and bookId != ''">
+                book_id = #{bookId,jdbcType=VARCHAR},
+            </if>
+            <if test="bookType != null and bookType != ''">
+                book_type = #{bookType,jdbcType=VARCHAR},
+            </if>
+            <if test="bookUrl != null and bookUrl != ''">
+                book_url = #{bookUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="bookName != null and bookName != ''">
+                book_name = #{bookName,jdbcType=VARCHAR},
+            </if>
+            <if test="bookAuthor != null and bookAuthor != ''">
+                book_author = #{bookAuthor,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null and createDate != ''">
+                create_date = #{createDate,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null and updateDate != ''">
+                update_date = #{updateDate,jdbcType=VARCHAR},
+            </if>
+            <if test="updateFlag != null and updateFlag != ''">
+                update_flag = #{updateFlag,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <where> 1=1
+            <if test="bookId != null and bookId != ''">
+                and book_id = #{bookId,jdbcType=VARCHAR}
+            </if>
+            <if test="seqNo != null and seqNo != ''">
+                and seq_no = #{seqNo}
+            </if>
+        </where>
+    </update>
 
     <insert id="insert" parameterType="com.orange.book.bookArticle.bean.BookArticleBean">
 		insert into book_article
 		(book_id, book_type, book_url,
 		book_name, book_author,
-		article_introduction, mail_flag, spider_flag
+		article_introduction, mail_flag, spider_flag,create_date,update_date,update_flag,bak
 		)
 		values (#{bookId,jdbcType=VARCHAR},
 		#{bookType,jdbcType=VARCHAR},
 		#{bookUrl,jdbcType=VARCHAR},
 		#{bookName,jdbcType=VARCHAR}, #{bookAuthor,jdbcType=VARCHAR},
-		#{articleIntroduction,jdbcType=VARCHAR}, '1', '1'
+		#{articleIntroduction,jdbcType=VARCHAR}, '1', '1',
+		#{createDate,jdbcType=VARCHAR},
+		#{updateDate,jdbcType=VARCHAR},
+		#{updateFlag,jdbcType=VARCHAR},
+		#{bak,jdbcType=VARCHAR}
 		)
 	</insert>
     <insert id="insertSelective" parameterType="com.orange.book.bookArticle.bean.BookArticleBean">
@@ -123,4 +167,23 @@
             )
         </foreach>
     </insert>
+    <select id="getArticleList" parameterType="com.orange.book.bookArticle.bean.BookArticleChapterBean"
+            resultType="com.orange.book.bookArticle.bean.BookArticleChapterBean">
+        select * from book_article_chapter
+        <where>1=1
+            <if test="articleSeqNo !=null and articleSeqNo != ''">
+                and article_seq_no =#{articleSeqNo}
+            </if>
+            <if test="bookId !=null and bookId != ''">
+                and book_id =#{bookId}
+            </if>
+            <if test="chapter !=null and chapter != ''">
+                and chapter =#{chapter}
+            </if>
+            <if test="bookContentUrl !=null and bookContentUrl != ''">
+                and book_content_url =#{bookContentUrl}
+            </if>
+        </where>
+
+    </select>
 </mapper>

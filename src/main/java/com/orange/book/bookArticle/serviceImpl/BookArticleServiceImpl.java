@@ -69,7 +69,12 @@ public class BookArticleServiceImpl implements BookArticleService {
         bookArticleBean = bookArticleMapper.getBeanById(id);
         return bookArticleBean;
     }
-
-
-
+    @Override
+    public List<BookArticleChapterBean> getArticleList(BookArticleChapterBean bookArticleChapterBean){
+        return bookArticleMapper.getArticleList(bookArticleChapterBean);
+    }
+    @Override
+    public int update(BookArticleBean record){
+        return bookArticleMapper.update(record);
+    }
 }

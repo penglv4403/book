@@ -14,4 +14,7 @@ public  interface BookArticleService {
 	BookArticleBean getBeanByUrl(String url);
     int insertChapterList(List<BookArticleChapterBean> list);
     int insertChapter(BookArticleChapterBean bookArticleChapterBean);
+    List<BookArticleChapterBean> getArticleList(BookArticleChapterBean bookArticleChapterBean);
+    int update(BookArticleBean record);
+
 }

@@ -41,11 +41,13 @@ public class Text {
 	@Test
 	public void text() throws Exception {
 		log.info("123");
-		Map<String, Object> select = bookArticleMapper.select("2398");
+		/*Map<String, Object> select = bookArticleMapper.select("2398");
 		Set<Map.Entry<String, Object>> entries = select.entrySet();
 		for (Map.Entry<String, Object> en: entries ) {
 			System.out.println(en.getKey() +en.getValue());
-		}
+		}*/
+
+bookArticleUtil.updateArticle();
 		//bookArticleSpider.getArticle("http://www.xbiquge.la/xiaoshuodaquan/");
 	//bookContentUtil.getContent("https://www.xbikuge.com/203/203231/59270484.html");
 	//	bookArticleUtil.getArticle("https://www.xbikuge.com/0/10/");

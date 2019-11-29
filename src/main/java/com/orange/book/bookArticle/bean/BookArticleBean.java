@@ -27,6 +27,43 @@ public class BookArticleBean implements Serializable{
     private String mailFlag;
     private String spiderFlag;
 
+    private String createDate;
+    private String updateDate;
+    private String updateFlag;
+    private String bak;
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(String updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getUpdateFlag() {
+        return updateFlag;
+    }
+
+    public void setUpdateFlag(String updateFlag) {
+        this.updateFlag = updateFlag;
+    }
+
+    public String getBak() {
+        return bak;
+    }
+
+    public void setBak(String bak) {
+        this.bak = bak;
+    }
+
     public int getSeqNo() {
         return seqNo;
     }

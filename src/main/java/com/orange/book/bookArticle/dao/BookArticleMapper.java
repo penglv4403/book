@@ -12,17 +12,19 @@ import org.apache.ibatis.annotations.Mapper;
 public interface BookArticleMapper {
     int insert(BookArticleBean record);
 
+    int update(BookArticleBean record);
+
     int insertSelective(BookArticleBean record);
 
     BookArticleBean getBeanById(String book_id);
-    
+
     List<BookArticleBean> getBeanList();
 
-	BookArticleBean getBeanByUrl(String url);
+    BookArticleBean getBeanByUrl(String url);
 
-	int insertChapterList(List<BookArticleChapterBean> list);
+    int insertChapterList(List<BookArticleChapterBean> list);
 
-	int insertChapter(BookArticleChapterBean bookArticleChapterBean);
+    int insertChapter(BookArticleChapterBean bookArticleChapterBean);
 
-	Map<String,Object> select(String url);
+    List<BookArticleChapterBean> getArticleList(BookArticleChapterBean bookArticleChapterBean);
 }
