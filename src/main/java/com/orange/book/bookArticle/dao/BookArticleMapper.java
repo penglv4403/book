@@ -16,7 +16,7 @@ public interface BookArticleMapper {
 
     int insertSelective(BookArticleBean record);
 
-    BookArticleBean getBeanById(String book_id);
+    BookArticleBean getBeanById(String bookId);
 
     List<BookArticleBean> getBeanList();
 

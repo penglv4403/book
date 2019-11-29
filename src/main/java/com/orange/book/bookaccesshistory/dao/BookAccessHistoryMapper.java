@@ -1,6 +1,6 @@
-package com.orange.book.bookAccessHistory.dao;
+package com.orange.book.bookaccesshistory.dao;
 
-import com.orange.book.bookAccessHistory.bean.BookAccessHistoryBean;
+import com.orange.book.bookaccesshistory.bean.BookAccessHistoryBean;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public interface BookAccessHistoryMapper {
 
     int insertSelective(BookAccessHistoryBean record);
 
-    BookAccessHistoryBean getBeanById(String book_id);
+    BookAccessHistoryBean getBeanById(String bookId);
     
     List<BookAccessHistoryBean> getBeanList();
 

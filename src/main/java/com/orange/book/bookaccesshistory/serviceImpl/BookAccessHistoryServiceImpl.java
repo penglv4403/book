@@ -1,9 +1,9 @@
-package com.orange.book.bookAccessHistory.serviceImpl;
+package com.orange.book.bookaccesshistory.serviceImpl;
 
 
-import com.orange.book.bookAccessHistory.bean.BookAccessHistoryBean;
-import com.orange.book.bookAccessHistory.service.BookAccessHistoryService;
-import com.orange.book.bookAccessHistory.dao.BookAccessHistoryMapper;
+import com.orange.book.bookaccesshistory.bean.BookAccessHistoryBean;
+import com.orange.book.bookaccesshistory.service.BookAccessHistoryService;
+import com.orange.book.bookaccesshistory.dao.BookAccessHistoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,19 +19,19 @@ public class BookAccessHistoryServiceImpl implements BookAccessHistoryService {
 	private static final Logger log = LoggerFactory.getLogger(BookAccessHistoryServiceImpl.class);
 
 	@Resource
-	private BookAccessHistoryMapper BookAccessHistoryMapper;
+	private BookAccessHistoryMapper bookAccessHistoryMapper;
 
 
 	@Override
 	public BookAccessHistoryBean addBean(BookAccessHistoryBean BookAccessHistoryBean) {
-		BookAccessHistoryMapper.insert(BookAccessHistoryBean);
+		bookAccessHistoryMapper.insert(BookAccessHistoryBean);
 		return BookAccessHistoryBean;
 	}
 
 	@Override
 	public List<BookAccessHistoryBean> getBeanList() {
 		List<BookAccessHistoryBean> BookAccessHistoryBeanList = null;
-		BookAccessHistoryBeanList = BookAccessHistoryMapper.getBeanList();
+		BookAccessHistoryBeanList = bookAccessHistoryMapper.getBeanList();
 		return BookAccessHistoryBeanList;
 	}
 
@@ -39,7 +39,7 @@ public class BookAccessHistoryServiceImpl implements BookAccessHistoryService {
 	@Override
 	public BookAccessHistoryBean getBeanById(String id) {
 		BookAccessHistoryBean BookAccessHistoryBean = null;
-		BookAccessHistoryBean = BookAccessHistoryMapper.getBeanById(id);
+		BookAccessHistoryBean = bookAccessHistoryMapper.getBeanById(id);
 		return BookAccessHistoryBean;
 	}
 

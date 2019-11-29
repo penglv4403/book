@@ -43,8 +43,9 @@ public class HttpClientUtils {
                 log.error("Method failed: " + response.getStatusLine());
             }
             HttpEntity entity = response.getEntity();
-            if (entity != null)
+            if (entity != null) {
                 responseStr = EntityUtils.toString(entity, "utf-8");
+            }
             // 4.处理 HTTP 响应内容
             System.out.println(responseStr);
         } catch (Exception e) {
@@ -79,10 +80,10 @@ public class HttpClientUtils {
             boolean isGzip = false;
             String contentType = "";
             for (Header header : response.getAllHeaders()) {
-                if (header.getName().equals("Content-Type")) {
+                if ("Content-Type".equals(header.getName())) {
                     contentType = header.getValue();
                 }
-                if(header.getValue().equals("gzip")){
+                if("gzip".equals(header.getValue())){
                     isGzip = true;
                 }
             }
@@ -102,10 +103,12 @@ public class HttpClientUtils {
             e.printStackTrace();
         } finally {
             try {
-                if (response != null)
+                if (response != null) {
                     response.close();
-                if (httpClient != null)
+                }
+                if (httpClient != null) {
                     httpClient.close();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

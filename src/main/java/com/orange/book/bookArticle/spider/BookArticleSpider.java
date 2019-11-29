@@ -1,7 +1,6 @@
 package com.orange.book.bookArticle.spider;
 
-import com.orange.book.bookAccessHistory.serviceImpl.BookAccessHistoryServiceImpl;
-import com.orange.book.bookArticle.serviceImpl.BookArticleServiceImpl;
+import com.orange.book.bookaccesshistory.serviceImpl.BookAccessHistoryServiceImpl;
 import com.orange.book.bookArticle.util.BookArticleUtil;
 import com.orange.book.httpClient.HttpClientUtils;
 import com.orange.book.httpClient.Page;
@@ -11,6 +10,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -27,6 +27,7 @@ public class BookArticleSpider {
     /**
      * 爬虫列表服务
      */
+    @Async("asyncPromiseExecutor")
     public void getArticle(String url) {
 
 
@@ -54,7 +55,6 @@ public class BookArticleSpider {
             }
 
         } catch (Exception e) {
-            // log.debug(spiderBookUrl + "===>访问失败");
             e.printStackTrace();
         }
     }

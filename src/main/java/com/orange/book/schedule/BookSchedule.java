@@ -29,35 +29,13 @@ public class BookSchedule {
     @Scheduled(cron="0 0 0/12 * * ?")
     public void startGetArticle(){
         log.info("定时任务：更新文章线程启动");
-        StartActicle startActicle = new StartActicle();
-        Thread th = new Thread(startActicle);
-        th.start();
+        bookArticleSpider.getArticle("http://www.xbiquge.la/xiaoshuodaquan/");
     }
 
     @Scheduled(cron="0 0 0/6 * * ?")
     public void updateArticle(){
         log.info("定时任务：更新章节线程启动");
-        UpdateArticle updateArticle = new UpdateArticle();
-        Thread th = new Thread(updateArticle);
-        th.start();
-    }
-    public class StartActicle implements Runnable{
-
-        @Override
-        public void run() {
-            bookArticleSpider.getArticle("http://www.xbiquge.la/xiaoshuodaquan/");
-        }
+        bookArticleUtil.updateArticle();
     }
 
-    public class UpdateArticle implements Runnable{
-
-        @Override
-        public void run() {
-            try {
-                bookArticleUtil.updateArticle();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

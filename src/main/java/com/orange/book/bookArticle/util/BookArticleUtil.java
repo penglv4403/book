@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLSyntaxErrorException;
@@ -59,7 +60,7 @@ public class BookArticleUtil {
         }
 
         Elements author = PageParserTool.select(bookArticle, "meta[property=og:novel:author]");
-        Elements book_name = PageParserTool.select(bookArticle, "meta[property=og:novel:book_name]");
+        Elements bookName = PageParserTool.select(bookArticle, "meta[property=og:novel:book_name]");
         Elements description = PageParserTool.select(bookArticle, "meta[property=og:description]");
         Elements category = PageParserTool.select(bookArticle, "meta[property=og:novel:category]");
         Pattern p1 = Pattern.compile("(?<=bookid = \").*?(?=\\\")");
@@ -68,7 +69,7 @@ public class BookArticleUtil {
         while (matcher1.find()) {
             bookId = matcher1.group(0);
         }
-        bookArticleBean.setBookName(book_name.attr("content"));
+        bookArticleBean.setBookName(bookName.attr("content"));
         bookArticleBean.setArticleIntroduction(description.attr("content"));
         bookArticleBean.setBookAuthor(author.attr("content"));
         bookArticleBean.setBookId(bookId);
@@ -218,14 +219,20 @@ public class BookArticleUtil {
     /**
      * 超过10期限断更状态 超过一个月已完结状态
      */
-    public void updateArticle() throws ParseException {
+    @Async("asyncPromiseExecutor")
+    public void updateArticle() {
         List<BookArticleBean> beanList = bookArticleService.getBeanList();
         for (BookArticleBean book:beanList) {
             //判断更新状态01：初始化，02:更新中 ，03：断更，04：已完结
             String updateFlag = book.getUpdateFlag();
             String newDate = DateTimeUtil.getDateFormat("yyyyMMdd");
             String updateDate = book.getUpdateDate();
-            int diffDate = DateTimeUtil.diffDate(newDate, updateDate);
+            int diffDate = 0;
+            try {
+                diffDate = DateTimeUtil.diffDate(newDate, updateDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             BookArticleBean bookArticleBean = new BookArticleBean();
             bookArticleBean.setSeqNo(book.getSeqNo());
 

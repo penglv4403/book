@@ -24,42 +24,41 @@ import java.util.Set;
 @SpringBootTest(classes = BookApplication.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class Text {
-	private static final Logger log = LoggerFactory.getLogger(Text.class);
+    private static final Logger log = LoggerFactory.getLogger(Text.class);
 
-	@Autowired
-	private BookContentUtil  bookContentUtil;
-	@Autowired
-	private BookArticleUtil bookArticleUtil;
-	@Value("${spiderBookUrl}")
-	private String spiderBookUrl;
-	@Autowired
-	private BookArticleServiceImpl bookArticleService;
-	@Autowired
-	private BookArticleSpider bookArticleSpider;
+    @Autowired
+    private BookContentUtil bookContentUtil;
+    @Autowired
+    private BookArticleUtil bookArticleUtil;
+    @Value("${spiderBookUrl}")
+    private String spiderBookUrl;
+    @Autowired
+    private BookArticleServiceImpl bookArticleService;
+    @Autowired
+    private BookArticleSpider bookArticleSpider;
     @Resource
     private BookArticleMapper bookArticleMapper;
-	@Test
-	public void text() throws Exception {
-		log.info("123");
+
+    @Test
+    public void text() throws Exception {
+        log.info("123");
 		/*Map<String, Object> select = bookArticleMapper.select("2398");
 		Set<Map.Entry<String, Object>> entries = select.entrySet();
 		for (Map.Entry<String, Object> en: entries ) {
 			System.out.println(en.getKey() +en.getValue());
 		}*/
-
-bookArticleUtil.updateArticle();
-		//bookArticleSpider.getArticle("http://www.xbiquge.la/xiaoshuodaquan/");
-	//bookContentUtil.getContent("https://www.xbikuge.com/203/203231/59270484.html");
-	//	bookArticleUtil.getArticle("https://www.xbikuge.com/0/10/");
+        bookContentUtil.getContent("http://www.xbiquge.la/15/15409/8570780.html");
+        //bookArticleUtil.updateArticle();
+        //bookArticleSpider.getArticle("http://www.xbiquge.la/xiaoshuodaquan/");
+        //bookContentUtil.getContent("https://www.xbikuge.com/203/203231/59270484.html");
+        //	bookArticleUtil.getArticle("https://www.xbikuge.com/0/10/");
 		/* BookContentBean beanById = bookContentService.getBeanById("588078511821");
 		 MailBean mail = new MailBean();
          mail.setContent(beanById.getContent());
          mail.setSubject(beanById.getTitle());
          sendMailService.sendHtmlMail(mail);*/
-		//bookArticleService.getArticle(spiderBookUrl);
-	}
-	
-	
-	
+        //bookArticleService.getArticle(spiderBookUrl);
+    }
+
 
 }

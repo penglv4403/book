@@ -21,7 +21,6 @@ public class BookContentServiceImpl implements BookContentService {
 	private BookContentMapper bookContentMapper;
 
 	@Override
-	@CachePut(value = "bookContentCatch",key = "#book.getContentId()")
 	public BookContentBean addBook(BookContentBean book) {
 		bookContentMapper.insert(book);
 		bookContentMapper.insertContent(book);
@@ -29,7 +28,6 @@ public class BookContentServiceImpl implements BookContentService {
 	}
 
 	@Override
-	@Cacheable(value = "bookContentCatch",key = "#contentId", unless = "#result == null")
 	public BookContentBean getBeanById(String contentId) {
 		BookContentBean bookContentBean=bookContentMapper.selectById(contentId);
 		return bookContentBean;

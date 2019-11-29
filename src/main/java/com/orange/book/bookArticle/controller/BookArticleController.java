@@ -20,36 +20,17 @@ public class BookArticleController {
     @RequestMapping("/startArticle")
     @ResponseBody
     public String startArticle(){
-        StartActicle startActicle = new StartActicle();
-        Thread th = new Thread(startActicle);
-        th.start();
+        bookArticleSpider.getArticle("http://www.xbiquge.la/xiaoshuodaquan/");
         return "1";
     }
 
-    public class StartActicle implements Runnable{
-        @Override
-        public void run() {
-            bookArticleSpider.getArticle("http://www.xbiquge.la/xiaoshuodaquan/");
-        }
-    }
+
+
     @RequestMapping("/updateArticle")
     @ResponseBody
-    public String updateArticle(){
-        UpdateArticle updateArticle = new UpdateArticle();
-        Thread th = new Thread(updateArticle);
-        th.start();
+    public String updateArticle() throws ParseException {
+        bookArticleUtil.updateArticle();
         return "2";
     }
 
-
-    public class UpdateArticle implements Runnable{
-        @Override
-        public void run() {
-            try {
-                bookArticleUtil.updateArticle();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

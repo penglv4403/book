@@ -75,7 +75,9 @@ public static String zn2num(String chineseNumber){
     if(chineseNumber.startsWith("十")){
     	res=String.valueOf(Integer.parseInt(res)+10);
     }
-    if (res.equals("")) return chineseNumber;
+    if ("".equals(res)) {
+        return chineseNumber;
+    }
     return res;
 }
 
@@ -154,7 +156,9 @@ public static String zn2num(String chineseNumber){
                 result += temp;
             }
         }
-        if (result == 0) return Integer.parseInt(chineseNumber);
+        if (result == 0) {
+            return Integer.parseInt(chineseNumber);
+        }
         return result;
     }
 

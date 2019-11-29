@@ -1,6 +1,6 @@
-package com.orange.book.bookAccessHistory.service;
+package com.orange.book.bookaccesshistory.service;
 
-import com.orange.book.bookAccessHistory.bean.BookAccessHistoryBean;
+import com.orange.book.bookaccesshistory.bean.BookAccessHistoryBean;
 
 import java.util.List;
 

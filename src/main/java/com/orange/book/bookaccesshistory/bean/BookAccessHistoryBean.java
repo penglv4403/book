@@ -1,4 +1,4 @@
-package com.orange.book.bookAccessHistory.bean;
+package com.orange.book.bookaccesshistory.bean;
 
 import java.io.Serializable;
 
