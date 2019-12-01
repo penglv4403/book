@@ -8,17 +8,21 @@ import com.orange.book.bookContent.bean.BookContentBean;
 import com.orange.book.bookContent.dao.BookContentMapper;
 import com.orange.book.bookContent.service.BookContentService;
 import com.orange.book.bookContent.util.BookContentUtil;
+import com.orange.book.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.util.Base64;
 import java.util.List;
 
 
 @Service
-public class BookContentServiceImpl implements BookContentService {
+public class BookContentServiceImpl<main, mai> implements BookContentService {
 
     @Resource
     private BookContentMapper bookContentMapper;
@@ -71,23 +75,31 @@ public class BookContentServiceImpl implements BookContentService {
         bookContentMapper.updateChines2Num(book);
     }
 
+    @Override
+    public void getBook(String bookName,String filePath) {
 
-    public void getBook(String bookName) {
         BookArticleBean bookArticleBean = new BookArticleBean();
         bookArticleBean.setBookName(bookName);
         List<BookArticleBean> beanList = bookArticleService.getBeanList(bookArticleBean);
+
         if (beanList != null && beanList.size() > 0) {
             BookArticleBean bookArticleBean1 = beanList.get(0);
             BookArticleChapterBean bookArticleChapterBean = new BookArticleChapterBean();
             bookArticleChapterBean.setArticleSeqNo(String.valueOf(bookArticleBean1.getSeqNo()));
             List<BookArticleChapterBean> articleList = bookArticleService.getArticleList(bookArticleChapterBean);
             for (BookArticleChapterBean chapter : articleList) {
-				bookContentUtil.getContent(chapter.getBookContentUrl());
+				BookContentBean con = bookContentUtil.getContent(chapter.getBookContentUrl());
+                /*byte[] byteArr = Base64.getDecoder().decode(con.getBytes());
+                String msg2 = new String(byteArr);*/
+                FileUtil.appendStringToFile(filePath,con.getTitle());
+                FileUtil.appendStringToFile(filePath,con.getContent());
             }
         }
 
 
     }
-
+public static  void main(String[] args){
+    FileUtil.appendStringToFile("C:\\\\Users\\\\ME\\\\Desktop\\a.txt","123");
+}
 
 }

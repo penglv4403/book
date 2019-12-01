@@ -2,9 +2,12 @@ package com.orange.book.bookArticle.controller;
 
 import com.orange.book.bookArticle.spider.BookArticleSpider;
 import com.orange.book.bookArticle.util.BookArticleUtil;
+import com.orange.book.bookContent.service.BookContentService;
 import com.orange.book.schedule.BookSchedule;
 import com.orange.book.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,6 +23,11 @@ public class BookArticleController {
     private BookArticleSpider bookArticleSpider;
     @Autowired
     private BookArticleUtil bookArticleUtil;
+
+    @Autowired
+    private BookContentService bookContentService;
+    @Value("bookPath")
+    private String bookPath;
 
     @RequestMapping("/startArticle")
     @ResponseBody
@@ -39,11 +47,12 @@ public class BookArticleController {
     @RequestMapping("/downloadFile")
     @ResponseBody
     public String downloadFile(HttpServletRequest request, HttpServletResponse response) {
-        String downloadFilePath = "/home/app/file/";//被下载的文件在服务器中的路径,
+       // String downloadFilePath = "/home/app/file/";//被下载的文件在服务器中的路径,
         String bookName = request.getParameter("bookName");
         String fileName = bookName + ".txt";//被下载文件的名称
-        File file = new File(downloadFilePath + fileName);
-        //FileUtil.appendStringToFile();
+        bookPath="C:\\\\Users\\\\ME\\\\Desktop\\";
+        File file = new File(bookPath + fileName);
+        bookContentService.getBook(bookName,bookPath + fileName);
         if (file.exists()) {
             response.setContentType("application/force-download");// 设置强制下载不打开
             response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);

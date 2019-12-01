@@ -2,6 +2,7 @@ package com.orange.book.bookContent.service;
 
 import com.orange.book.bookContent.bean.BookContentBean;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public  interface BookContentService {
@@ -18,4 +19,6 @@ public  interface BookContentService {
 	BookContentBean getBeanByURL(String url);
 
 	int insertContent(BookContentBean record);
+
+    void getBook(String bookName,String filePath);
 }

@@ -17,6 +17,15 @@
         <result column="update_flag" property="updateFlag" jdbcType="VARCHAR"/>
         <result column="bak" property="bak" jdbcType="VARCHAR"/>
     </resultMap>
+
+    <resultMap id="ChapterBaseResultMap"
+               type="com.orange.book.bookArticle.bean.BookArticleChapterBean">
+        <result column="article_seq_no" property="articleSeqNo" jdbcType="INTEGER"/>
+        <result column="book_id" property="bookId" jdbcType="VARCHAR"/>
+        <result column="chapter" property="chapter" jdbcType="VARCHAR"/>
+        <result column="book_content_url" property="bookContentUrl" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <select id="getBeanById" resultMap="BaseResultMap">
 		select * from book_article
 		where 1 = 1
@@ -178,7 +187,7 @@
         </foreach>
     </insert>
     <select id="getArticleList" parameterType="com.orange.book.bookArticle.bean.BookArticleChapterBean"
-            resultType="com.orange.book.bookArticle.bean.BookArticleChapterBean">
+            resultMap="ChapterBaseResultMap">
         select * from book_article_chapter
         <where>1=1
             <if test="articleSeqNo !=null and articleSeqNo != ''">
