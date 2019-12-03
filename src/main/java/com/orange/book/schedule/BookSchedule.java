@@ -32,10 +32,10 @@ public class BookSchedule {
         bookArticleSpider.getArticle("http://www.xbiquge.la/xiaoshuodaquan/");
     }
 
-    @Scheduled(cron="0 0 0/6 * * ?")
+    @Scheduled(cron="0 0 0/3 * * ?")
     public void updateArticle(){
         log.info("定时任务：更新章节线程启动");
-        bookArticleUtil.updateArticle();
+        bookArticleUtil.updateArticle("");
     }
 
 }

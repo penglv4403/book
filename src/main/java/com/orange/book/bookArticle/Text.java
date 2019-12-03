@@ -48,7 +48,7 @@ public class Text {
 			System.out.println(en.getKey() +en.getValue());
 		}*/
         //bookContentUtil.getContent("http://www.xbiquge.la/15/15409/8570780.html");
-        bookArticleUtil.updateArticle();
+        bookArticleUtil.updateArticle("");
         //bookArticleSpider.getArticle("http://www.xbiquge.la/xiaoshuodaquan/");
         //bookContentUtil.getContent("https://www.xbikuge.com/203/203231/59270484.html");
         //	bookArticleUtil.getArticle("https://www.xbikuge.com/0/10/");

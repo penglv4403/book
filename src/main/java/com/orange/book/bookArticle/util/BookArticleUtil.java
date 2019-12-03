@@ -9,6 +9,7 @@ import com.orange.book.httpClient.HttpClientUtils;
 import com.orange.book.httpClient.Page;
 import com.orange.book.httpClient.PageParserTool;
 import com.orange.book.utils.DateTimeUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -120,7 +121,7 @@ public class BookArticleUtil {
                 bookArticleChapterBean.setBookContentUrl(href);
                 bookArticleChapterBean.setChapter(element.text());
                 // bookArticleService.insertChapter(bookArticleChapterBean);
-
+                bookArticleChapterBean.setCreateDate(DateTimeUtil.getDateFormat("yyyyMMdd"));
                 i = i + 1;
                 bookArticleChapterBeans.add(bookArticleChapterBean);
 
@@ -188,6 +189,7 @@ public class BookArticleUtil {
                 bookArticleChapterBean.setArticleSeqNo(String.valueOf(beanById.getSeqNo()));
                 bookArticleChapterBean.setBookContentUrl(href);
                 bookArticleChapterBean.setChapter(element.text());
+                bookArticleChapterBean.setCreateDate(DateTimeUtil.getDateFormat("yyyyMMdd"));
                 // bookArticleService.insertChapter(bookArticleChapterBean);
                 bookArticleChapterBeans.add(bookArticleChapterBean);
             }
@@ -210,6 +212,7 @@ public class BookArticleUtil {
                 bookArticleChapter.setArticleSeqNo(book.getArticleSeqNo());
                 bookArticleChapter.setBookContentUrl(book.getBookContentUrl());
                 bookArticleChapter.setChapter(book.getChapter());
+                bookArticleChapter.setCreateDate(DateTimeUtil.getDateFormat("yyyyMMdd"));
                 List<BookArticleChapterBean> articleList1 = bookArticleService.getArticleList(bookArticleChapter);
                 if (articleList1.isEmpty()){
                     bookArticleService.insertChapter(book);
@@ -227,8 +230,14 @@ public class BookArticleUtil {
      * 超过10期限断更状态 超过一个月已完结状态
      */
     @Async("asyncPromiseExecutor")
-    public void updateArticle() {
-        List<BookArticleBean> beanList = bookArticleService.getBeanList(new BookArticleBean());
+    public void updateArticle(String bookName) {
+        BookArticleBean intiBean = new BookArticleBean();
+
+        if(StringUtils.isNotBlank(bookName)){
+            log.info("指定数据更新:"+bookName);
+            intiBean.setBookName(bookName);
+        }
+        List<BookArticleBean> beanList = bookArticleService.getBeanList(intiBean);
         for (BookArticleBean book:beanList) {
             //判断更新状态01：初始化，02:更新中 ，03：断更，04：已完结
             String updateFlag = book.getUpdateFlag();

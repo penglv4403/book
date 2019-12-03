@@ -155,7 +155,8 @@
         article_seq_no,
         book_id,
         chapter,
-        book_content_url
+        book_content_url,
+        create_date
         )
         values
 
@@ -163,7 +164,8 @@
             #{articleSeqNo,jdbcType=VARCHAR},
             #{bookId,jdbcType=VARCHAR},
             #{chapter,jdbcType=VARCHAR},
-            #{bookContentUrl,jdbcType=VARCHAR}
+            #{bookContentUrl,jdbcType=VARCHAR},
+            #{createDate,jdbcType=VARCHAR}
             )
 
     </insert>
@@ -174,7 +176,8 @@
         article_seq_no,
         book_id,
         chapter,
-        book_content_url
+        book_content_url,
+        create_date
         )
         values
         <foreach collection="list" item="e" open="" separator="," close="">
@@ -182,7 +185,8 @@
             #{e.articleSeqNo,jdbcType=VARCHAR},
             #{e.bookId,jdbcType=VARCHAR},
             #{e.chapter,jdbcType=VARCHAR},
-            #{e.bookContentUrl,jdbcType=VARCHAR}
+            #{e.bookContentUrl,jdbcType=VARCHAR},
+            #{e.createDate,jdbcType=VARCHAR}
             )
         </foreach>
     </insert>

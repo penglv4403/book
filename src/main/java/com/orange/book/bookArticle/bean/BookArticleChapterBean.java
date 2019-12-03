@@ -10,6 +10,15 @@ public class BookArticleChapterBean implements Serializable {
     private String bookId;
     private String chapter;
     private String bookContentUrl;
+    private String createDate;
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
 
     public String getArticleSeqNo() {
         return articleSeqNo;

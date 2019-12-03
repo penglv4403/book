@@ -1,6 +1,5 @@
 package com.orange.book.bookArticle.spider;
 
-import com.orange.book.bookaccesshistory.serviceImpl.BookAccessHistoryServiceImpl;
 import com.orange.book.bookArticle.util.BookArticleUtil;
 import com.orange.book.httpClient.HttpClientUtils;
 import com.orange.book.httpClient.Page;
@@ -19,8 +18,7 @@ import java.util.Iterator;
 public class BookArticleSpider {
     private static final Logger log = LoggerFactory.getLogger(BookArticleSpider.class);
 
-    @Autowired
-    private BookAccessHistoryServiceImpl bookAccessHistoryService;
+
     @Autowired
     private BookArticleUtil bookArticleUtil;
 

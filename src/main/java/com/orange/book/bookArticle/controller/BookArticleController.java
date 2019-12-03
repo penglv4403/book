@@ -26,7 +26,7 @@ public class BookArticleController {
 
     @Autowired
     private BookContentService bookContentService;
-    @Value("bookPath")
+    @Value("${bookPath}")
     private String bookPath;
 
     @RequestMapping("/startArticle")
@@ -39,11 +39,17 @@ public class BookArticleController {
 
     @RequestMapping("/updateArticle")
     @ResponseBody
-    public String updateArticle() throws ParseException {
-        bookArticleUtil.updateArticle();
+    public String updateArticle(HttpServletRequest request) throws ParseException {
+        bookArticleUtil.updateArticle(request.getParameter("bookName"));
         return "2";
     }
 
+    @RequestMapping("/test")
+    @ResponseBody
+    public String test() throws ParseException {
+        System.out.println(this.bookPath);
+        return "2";
+    }
     @RequestMapping("/downloadFile")
     @ResponseBody
     public String downloadFile(HttpServletRequest request, HttpServletResponse response) {
