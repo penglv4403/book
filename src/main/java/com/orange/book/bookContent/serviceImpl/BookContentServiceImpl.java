@@ -4,6 +4,7 @@ package com.orange.book.bookContent.serviceImpl;
 import com.orange.book.bookArticle.bean.BookArticleBean;
 import com.orange.book.bookArticle.bean.BookArticleChapterBean;
 import com.orange.book.bookArticle.service.BookArticleService;
+import com.orange.book.bookArticle.util.BookArticleUtil;
 import com.orange.book.bookContent.bean.BookContentBean;
 import com.orange.book.bookContent.dao.BookContentMapper;
 import com.orange.book.bookContent.service.BookContentService;
@@ -30,7 +31,8 @@ public class BookContentServiceImpl<main, mai> implements BookContentService {
     private BookContentUtil bookContentUtil;
     @Autowired
     private BookArticleService bookArticleService;
-
+    @Autowired
+    private BookArticleUtil bookArticleUtil;
 
     @Override
     public BookContentBean addBook(BookContentBean book) {
@@ -76,7 +78,7 @@ public class BookContentServiceImpl<main, mai> implements BookContentService {
     }
 
     @Override
-    public void getBook(String bookName,String filePath) {
+    public void getBook(String bookName, String filePath) {
 
         BookArticleBean bookArticleBean = new BookArticleBean();
         bookArticleBean.setBookName(bookName);
@@ -84,22 +86,24 @@ public class BookContentServiceImpl<main, mai> implements BookContentService {
 
         if (beanList != null && beanList.size() > 0) {
             BookArticleBean bookArticleBean1 = beanList.get(0);
+            bookArticleUtil.updateArticle(bookArticleBean1.getBookName());
             BookArticleChapterBean bookArticleChapterBean = new BookArticleChapterBean();
             bookArticleChapterBean.setArticleSeqNo(String.valueOf(bookArticleBean1.getSeqNo()));
             List<BookArticleChapterBean> articleList = bookArticleService.getArticleList(bookArticleChapterBean);
             for (BookArticleChapterBean chapter : articleList) {
-				BookContentBean con = bookContentUtil.getContent(chapter.getBookContentUrl());
+                BookContentBean con = bookContentUtil.getContent(chapter.getBookContentUrl());
                 /*byte[] byteArr = Base64.getDecoder().decode(con.getBytes());
                 String msg2 = new String(byteArr);*/
-                FileUtil.appendStringToFile(filePath,con.getTitle());
-                FileUtil.appendStringToFile(filePath,con.getContent());
+                FileUtil.appendStringToFile(filePath, con.getTitle());
+                FileUtil.appendStringToFile(filePath, con.getContent());
             }
         }
 
 
     }
-public static  void main(String[] args){
-    FileUtil.appendStringToFile("C:\\\\Users\\\\ME\\\\Desktop\\a.txt","123");
-}
+
+    public static void main(String[] args) {
+        FileUtil.appendStringToFile("C:\\\\Users\\\\ME\\\\Desktop\\a.txt", "123");
+    }
 
 }

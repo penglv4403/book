@@ -152,6 +152,7 @@ public class BookArticleUtil {
     }
 
     public void updateArticleChapter(String url){
+        log.info("更新目录章节："+url);
         Page bookArticle = HttpClientUtils.httpGet(url);
         Elements chapterlist = PageParserTool.select(bookArticle, "div[id=list]");
         Elements a = chapterlist.select("a");
@@ -200,14 +201,32 @@ public class BookArticleUtil {
         List<BookArticleChapterBean> articleList = bookArticleService.getArticleList(bookArticleChapterBean);
         log.info("本地存储总数:"+articleList.size() +"<===>网络数据总数:"+bookArticleChapterBeans.size());
         if (articleList!= null && bookArticleChapterBeans !=null && articleList.size() != bookArticleChapterBeans.size()){
-            articleList.clear();
             BookArticleBean bookArticleBean = new BookArticleBean();
             bookArticleBean.setSeqNo(beanById.getSeqNo());
             bookArticleBean.setUpdateFlag("02");//更新中
             bookArticleBean.setUpdateDate(DateTimeUtil.getDateFormat("yyyyMMdd"));
             bookArticleService.update(bookArticleBean);
             BookArticleChapterBean bookArticleChapter = new BookArticleChapterBean();
-            for (BookArticleChapterBean book:bookArticleChapterBeans) {
+            int insertNum = 0;  //本次插入个数
+            for (int j = bookArticleChapterBeans.size()-1; j > 0; j--){
+                BookArticleChapterBean book = bookArticleChapterBeans.get(j);
+                bookArticleChapter.setBookId(book.getBookId());
+                bookArticleChapter.setArticleSeqNo(book.getArticleSeqNo());
+                bookArticleChapter.setBookContentUrl(book.getBookContentUrl());
+                bookArticleChapter.setChapter(book.getChapter());
+                bookArticleChapter.setCreateDate(DateTimeUtil.getDateFormat("yyyyMMdd"));
+                List<BookArticleChapterBean> articleList1 = bookArticleService.getArticleList(bookArticleChapter);
+                if (articleList1.isEmpty()){
+                    bookArticleService.insertChapter(book);
+                    insertNum++;
+                }else{
+                    if(bookArticleChapterBeans.size() == (articleList.size()+insertNum)){
+                        break;
+                    }
+                }
+            }
+            log.info(beanById.getBookName()+"===>本次更新数量为："+insertNum);
+            /*for (BookArticleChapterBean book:bookArticleChapterBeans) {
                 bookArticleChapter.setBookId(book.getBookId());
                 bookArticleChapter.setArticleSeqNo(book.getArticleSeqNo());
                 bookArticleChapter.setBookContentUrl(book.getBookContentUrl());
@@ -217,7 +236,7 @@ public class BookArticleUtil {
                 if (articleList1.isEmpty()){
                     bookArticleService.insertChapter(book);
                 }
-            }
+            }*/
         }
     }
 
@@ -251,15 +270,15 @@ public class BookArticleUtil {
             }
             BookArticleBean bookArticleBean = new BookArticleBean();
             bookArticleBean.setSeqNo(book.getSeqNo());
-
+            log.info("数据同步时间时间差为："+diffDate);
             if("01".equals(updateFlag) || "02".equals(updateFlag)){
                 if(diffDate > 10 &&  diffDate < 31){
                     updateFlag = "03";
-                    bookArticleBean.setUpdateFlag("03");//更新中
+                    bookArticleBean.setUpdateFlag("03");//断更中
                     bookArticleService.update(bookArticleBean);
                 }else if(diffDate >30){
                     updateFlag = "04";
-                    bookArticleBean.setUpdateFlag("04");//更新中
+                    bookArticleBean.setUpdateFlag("04");//停更
                     bookArticleService.update(bookArticleBean);
                 }else{
                     updateArticleChapter(book.getBookUrl());

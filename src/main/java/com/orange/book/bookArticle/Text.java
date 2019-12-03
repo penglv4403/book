@@ -7,6 +7,8 @@ import com.orange.book.bookArticle.serviceImpl.BookArticleServiceImpl;
 import com.orange.book.bookArticle.spider.BookArticleSpider;
 import com.orange.book.bookArticle.util.BookArticleUtil;
 import com.orange.book.bookContent.util.BookContentUtil;
+import com.orange.book.httpClient.HttpClientUtils;
+import com.orange.book.httpClient.Page;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -60,5 +62,9 @@ public class Text {
         //bookArticleService.getArticle(spiderBookUrl);
     }
 
+    public static void main(String[] args) {
+        Page page = HttpClientUtils.httpGet("https://www.xiashu.cc/251944/");
+        System.out.println(page.getHtml());
+    }
 
 }

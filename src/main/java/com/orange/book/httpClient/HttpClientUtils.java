@@ -1,11 +1,6 @@
 package com.orange.book.httpClient;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.SocketTimeoutException;
-import java.util.List;
+
 
 
 import org.apache.http.*;
@@ -14,11 +9,9 @@ import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,11 +52,15 @@ public class HttpClientUtils {
         return null;
     }
 
-    public synchronized static Page httpGet(String url) {
+    public  static Page httpGet(String url) {
         Page page = null;
         // 通过httpClient获取网页响应,将返回的响应解析为纯文本119.102.132.134	9999
         HttpGet httpGet = new HttpGet(url);
-        httpGet.setConfig(RequestConfig.custom().setSocketTimeout(30000).setConnectTimeout(30000).build());
+        HttpHost proxy = new HttpHost("19.102.132.141",9999);
+        httpGet.setConfig(RequestConfig.custom().setProxy(proxy).setSocketTimeout(30000).setConnectTimeout(30000).build());
+        //        httpGet.setConfig(RequestConfig.custom().setSocketTimeout(30000).setConnectTimeout(30000).build());
+        //设置请求头消息
+        httpGet.setHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36");
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;

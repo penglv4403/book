@@ -3,25 +3,18 @@ package com.orange.book.document;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.SharedStringsTable;
+import org.apache.poi.xssf.model.StylesTable;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -30,228 +23,269 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+public abstract class BigExcelReader{
 
-/**
- * 类名称：BigExcelReader
- * 类描述：
- */
-public class BigExcelReader {
-	private XSSFReader xssfReader;
-	//获取一行时最小数组长度
-	private int currentRow = 0;
-	private int sheetIndex = -1;
-	private int thisColumnIndex = -1;
-	// 日期标志
-	private boolean dateFlag;
-	// 数字标志
-	private boolean numberFlag;
-	private boolean isTElement;
-	private RowReader rowReader;
-	private List<String> rowlist = new ArrayList<String>();
-	public void setRowReader(RowReader rowReader) {
-		this.rowReader = rowReader;
+	enum xssfDataType {
+		BOOL, ERROR, FORMULA, INLINESTR, SSTINDEX, NUMBER,
 	}
+
+	public static final int ERROR = 1;
+	public static final int BOOLEAN = 1;
+	public static final int NUMBER = 2;
+	public static final int STRING = 3;
+	public static final int DATE = 4;
+	public static final String DATE_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
+
+
+	//	private DataFormatter formatter = new DataFormatter();
+	private InputStream sheet;
+	private XMLReader parser;
+	private InputSource sheetSource;
+	private int index = 0;
 
 	/**
-	 * 构造方法
-	 */
-	public BigExcelReader(String filename) throws Exception {
-		if (StringUtils.isEmpty(filename)) {
-			throw new Exception("文件名不能空");
-		}
-		OPCPackage pkg = OPCPackage.open(filename);
-		init(pkg);
-
-	}
-	public BigExcelReader(InputStream is) throws Exception {
-		if (null == is) {
-			throw new Exception("文件不能空");
-		}
-		OPCPackage pkg = OPCPackage.open(is);
-		init(pkg);
-	}
-	
-	public BigExcelReader(MultipartFile file) throws Exception {
-		if (null == file) {
-			throw new Exception("文件不能空");
-		}
-		//OPCPackage pkg = OPCPackage.open(file);
-		CommonsMultipartFile cf = (CommonsMultipartFile) file;
-		DiskFileItem fi = (DiskFileItem) cf.getFileItem();
-		File f = fi.getStoreLocation();
-		OPCPackage pkg = OPCPackage.open(f);
-		init(pkg);
-	}
-	private void init(OPCPackage pkg) throws IOException, OpenXML4JException {
-		xssfReader = new XSSFReader(pkg);
-	}
-
-	/**
-	 * 获取sheet
-	 * @throws Exception
-	 */
-	public void process() throws Exception {
-		SharedStringsTable sst = xssfReader.getSharedStringsTable();
-		XMLReader parser = fetchSheetParser(sst);
-		Iterator<InputStream> it = xssfReader.getSheetsData();
-		while (it.hasNext()) {
-			sheetIndex++;
-			InputStream sheet = it.next();
-			InputSource sheetSource = new InputSource(sheet);
-			parser.parse(sheetSource);
-			sheet.close();
-		}
-	}
-
-	/**
-	 * 加载sax 解析器
-	 * 
-	 * @param sst
-	 * @return
+	 * 读大数据量Excel
+	 *
+	 * @param filename 文件名
+	 * @throws IOException
+	 * @throws OpenXML4JException
 	 * @throws SAXException
 	 */
-	private XMLReader fetchSheetParser(SharedStringsTable sst) throws SAXException {
-		XMLReader parser = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
-		ContentHandler handler = new PagingHandler(sst);
+	public BigExcelReader(String filename) throws IOException, OpenXML4JException, SAXException{
+		OPCPackage pkg = OPCPackage.open(filename);
+		init(pkg);
+	}
+
+	/**
+	 * 读大数据量Excel
+	 *
+	 * @param file Excel文件
+	 * @throws IOException
+	 * @throws OpenXML4JException
+	 * @throws SAXException
+	 */
+	public BigExcelReader(File file) throws IOException, OpenXML4JException, SAXException{
+		OPCPackage pkg = OPCPackage.open(file);
+		init(pkg);
+	}
+
+	/**
+	 * 读大数据量Excel
+	 *
+	 * @param in Excel文件输入流
+	 * @throws IOException
+	 * @throws OpenXML4JException
+	 * @throws SAXException
+	 */
+	public BigExcelReader(InputStream in) throws IOException, OpenXML4JException, SAXException{
+		OPCPackage pkg = OPCPackage.open(in);
+		init(pkg);
+	}
+
+	/**
+	 * 初始化 将Excel转换为XML
+	 *
+	 * @param pkg
+	 * @throws IOException
+	 * @throws OpenXML4JException
+	 * @throws SAXException
+	 */
+	private void init(OPCPackage pkg) throws IOException, OpenXML4JException, SAXException{
+		XSSFReader xssfReader = new XSSFReader(pkg);
+		SharedStringsTable sharedStringsTable = xssfReader.getSharedStringsTable();
+		StylesTable stylesTable = xssfReader.getStylesTable();
+		sheet = xssfReader.getSheet("rId1");
+		parser = fetchSheetParser(sharedStringsTable, stylesTable);
+		sheetSource = new InputSource(sheet);
+	}
+
+	/**
+	 * 执行解析操作
+	 *
+	 * @return 读取的Excel行数
+	 */
+	public int parse(){
+		try {
+			parser.parse(sheetSource);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (SAXException e) {
+			e.printStackTrace();
+		}
+		finally{
+			if(sheet != null){
+				try {
+					sheet.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return index;
+	}
+
+	private XMLReader fetchSheetParser(SharedStringsTable sharedStringsTable, StylesTable stylesTable) throws SAXException {
+		XMLReader parser =
+				XMLReaderFactory.createXMLReader(
+						"org.apache.xerces.parsers.SAXParser"
+				);
+		ContentHandler handler = new SheetHandler(sharedStringsTable, stylesTable);
 		parser.setContentHandler(handler);
 		return parser;
 	}
 
 	/**
-	 * See org.xml.sax.helpers.DefaultHandler javadocs
+	 * SAX解析的处理类
+	 * 每解析一行数据后通过outputRow(String[] datas, int[] rowTypes, int rowIndex)方法进行输出
+	 *
+	 * @author zpin
 	 */
-	private class PagingHandler extends DefaultHandler {
-		private SharedStringsTable sst;
-		private String lastContents;
-		private boolean nextIsString;
-		private String index = null;
+	private class SheetHandler extends DefaultHandler {
+		private SharedStringsTable sharedStringsTable; // 存放映射字符串
+		private StylesTable stylesTable;// 存放单元格样式
+		private String readValue;// 存放读取值
+		private xssfDataType dataType;// 单元格类型
+		private String[] rowDatas;// 存放一行中的所有数据
+		private int[] rowTypes;// 存放一行中所有数据类型
+		private int colIdx;// 当前所在列
 
-		private PagingHandler(SharedStringsTable sst) {
-			this.sst = sst;
+		private short formatIndex;
+//		private String formatString;// 对数值型的数据直接读为数值，不对其格式化，所以隐掉此处
+
+		private SheetHandler(SharedStringsTable sst,StylesTable stylesTable) {
+			this.sharedStringsTable = sst;
+			this.stylesTable = stylesTable;
 		}
 
-		/**
-		 * 开始元素
-		 */
-		@Override
-		public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
-			if (name.equals("c")) {
-				index = attributes.getValue("r");
-				int firstDigit = -1;
-				for (int c = 0; c < index.length(); ++c) {
-					if (Character.isDigit(index.charAt(c))) {
-						firstDigit = c;
+		public void startElement(String uri, String localName, String name,
+								 Attributes attributes) throws SAXException {
+			if(name.equals("c")) {// c > 单元格
+				colIdx = getColumn(attributes);
+				String cellType = attributes.getValue("t");
+				String cellStyle = attributes.getValue("s");
+
+				this.dataType = xssfDataType.NUMBER;
+				if ("b".equals(cellType)){
+					this.dataType = xssfDataType.BOOL;
+				}
+				else if ("e".equals(cellType)){
+					this.dataType = xssfDataType.ERROR;
+				}
+				else if ("inlineStr".equals(cellType)){
+					this.dataType = xssfDataType.INLINESTR;
+				}
+				else if ("s".equals(cellType)){
+					this.dataType = xssfDataType.SSTINDEX;
+				}
+				else if ("str".equals(cellType)){
+					this.dataType = xssfDataType.FORMULA;
+				}
+				else if(cellStyle != null){
+					int styleIndex = Integer.parseInt(cellStyle);
+					XSSFCellStyle style = stylesTable.getStyleAt(styleIndex);
+					this.formatIndex = style.getDataFormat();
+//		            this.formatString = style.getDataFormatString();  
+				}
+			}
+			// 解析到一行的开始处时，初始化数组
+			else if(name.equals("row")){
+				int cols = getColsNum(attributes);// 获取该行的单元格数
+				rowDatas = new String[cols];
+				rowTypes = new int[cols];
+			}
+			readValue = "";
+		}
+
+		public void endElement(String uri, String localName, String name)
+				throws SAXException {
+			if(name.equals("v")) { // 单元格的值
+				switch(this.dataType){
+					case BOOL: {
+						char first = readValue.charAt(0);
+						rowDatas[colIdx] = first == '0' ? "FALSE" : "TRUE";
+						rowTypes[colIdx] = BOOLEAN;
+						break;
+					}
+					case ERROR: {
+						rowDatas[colIdx] = "ERROR:" + readValue.toString();
+						rowTypes[colIdx] = ERROR;
+						break;
+					}
+					case INLINESTR: {
+						rowDatas[colIdx] = new XSSFRichTextString(readValue).toString();
+						rowTypes[colIdx] = STRING;
+						break;
+					}
+					case SSTINDEX:{
+						int idx = Integer.parseInt(readValue);
+						rowDatas[colIdx] = new XSSFRichTextString(sharedStringsTable.getEntryAt(idx)).toString();
+						rowTypes[colIdx] = STRING;
+						break;
+					}
+					case FORMULA:{
+						rowDatas[colIdx] = readValue;
+						rowTypes[colIdx] = STRING;
+						break;
+					}
+					case NUMBER:{
+						// 判断是否是日期格式  
+						if (HSSFDateUtil.isADateFormat(formatIndex, readValue)) {
+							Double d = Double.parseDouble(readValue);
+							Date date = HSSFDateUtil.getJavaDate(d);
+							rowDatas[colIdx] = DateFormatUtils.format(date, DATE_FORMAT_STR);
+							rowTypes[colIdx] = DATE;
+						}
+//			            else if (formatString != null){
+//			            	cellData.value = formatter.formatRawCellContents(Double.parseDouble(cellValue), formatIndex, formatString);
+//			            	cellData.dataType = NUMBER;
+//			            }
+						else{
+							rowDatas[colIdx] = readValue;
+							rowTypes[colIdx] = NUMBER;
+						}
 						break;
 					}
 				}
-				thisColumnIndex = nameToColumn(index.substring(0, firstDigit));
-				
-				// 判断是否是新的一行
-				if (Pattern.compile("^A[0-9]+$").matcher(index).find()) {
-					currentRow++;
-				}
-				String cellType = attributes.getValue("t");
-				if (cellType != null && cellType.equals("s")) {
-					nextIsString = true;
-				} else {
-					nextIsString = false;
-				}
-				// 日期格式
-				String cellDateType = attributes.getValue("s");
-				if ("1".equals(cellDateType)) {
-					dateFlag = true;
-				} else {
-					dateFlag = false;
-				}
-				String cellNumberType = attributes.getValue("s");
-				if ("2".equals(cellNumberType)) {
-					numberFlag = true;
-				} else {
-					numberFlag = false;
-				}
 			}
-			// 当元素为t时
-			if ("t".equals(name)) {
-				isTElement = true;
-			} else {
-				isTElement = false;
-			}
-			lastContents = "";
-		}
-
-		/**
-		 * 获取value
-		 */
-		@Override
-		public void endElement(String uri, String localName, String name) throws SAXException {
-			if (nextIsString) {
-				int idx = Integer.parseInt(lastContents);
-				lastContents = new XSSFRichTextString(sst.getEntryAt(idx)).toString();
-				nextIsString = false;
-			}
-			// t元素也包含字符串
-			if (isTElement) {
-				String value = lastContents.trim();
-				rowlist.add(thisColumnIndex,value);
-				isTElement = false;
-				// v => 单元格的值，如果单元格是字符串则v标签的值为该字符串在SST中的索引
-				// 将单元格内容加入rowlist中，在这之前先去掉字符串前后的空白符
-			} else if ("v".equals(name)) {
-				String value = lastContents.trim();
-				value = value.equals("") ? "" : value;
-			/*	// 日期格式处理
-				if (dateFlag) {
-					try {
-						Date date = HSSFDateUtil.getJavaDate(Double.valueOf(value));
-						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-						value = dateFormat.format(date);
-					} catch (NumberFormatException e) {
-					}
-				}
-				// 数字类型处理
-				if (numberFlag) {
-					try {
-						BigDecimal bd = new BigDecimal(value);
-						value = bd.setScale(3, BigDecimal.ROUND_UP).toString();
-					} catch (Exception e) {
-					}
-				}*/
-				//rowlist.add(thisColumnIndex,value);
-				
-			} else {
-				if (name.equals("row")) {
-					if (rowlist.size() > 0) {
-						System.out.println(rowlist.toString());
-						rowReader.getRows(sheetIndex, currentRow, rowlist);
-						rowlist.clear();
-					}
-				}
+			// 当解析的一行的末尾时，输出数组中的数据
+			else if(name.equals("row")){
+				outputRow(rowDatas, rowTypes, index++);
 			}
 		}
 
-		@Override
-		public void characters(char[] ch, int start, int length) throws SAXException {
-			lastContents += new String(ch, start, length);
+		public void characters(char[] ch, int start, int length)
+				throws SAXException {
+			readValue += new String(ch, start, length);
 		}
-
 	}
-	private int nameToColumn(String name) {
+
+	/**
+	 * 输出每一行的数据
+	 *
+	 * @param datas 数据
+	 * @param rowTypes 数据类型
+	 * @param rowIndex 所在行
+	 */
+	protected abstract void outputRow(String[] datas, int[] rowTypes, int rowIndex);
+
+	private int getColumn(Attributes attrubuts) {
+		String name = attrubuts.getValue("r");
 		int column = -1;
 		for (int i = 0; i < name.length(); ++i) {
+			if (Character.isDigit(name.charAt(i))) {
+				break;
+			}
 			int c = name.charAt(i);
 			column = (column + 1) * 26 + c - 'A';
 		}
 		return column;
 	}
-	public static void main(String[] args) throws Exception {
-		long start = System.currentTimeMillis();
-	/*	RowReader rowrReader = new RowReader();
-		BigExcelReader reader = new BigExcelReader("D:\\360MoveData\\Users\\hundsun\\Desktop\\省行对私贷款漂白1.xlsx");
-		reader.setRowReader(rowrReader);
-		reader.process();
-		List<Map<String,String>> list = rowrReader.getList();
-		System.out.println(list.toString());
-		long end = System.currentTimeMillis();*/
-		//System.out.println((end - start) / 1000);
+
+	private int getColsNum(Attributes attrubuts){
+		String spans = attrubuts.getValue("spans");
+		String cols = spans.substring(spans.indexOf(":") + 1);
+		return Integer.parseInt(cols);
 	}
 }
