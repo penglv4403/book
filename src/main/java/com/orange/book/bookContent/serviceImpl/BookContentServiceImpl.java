@@ -78,7 +78,7 @@ public class BookContentServiceImpl<main, mai> implements BookContentService {
     }
 
     @Override
-    public void getBook(String bookName, String filePath) {
+    public void getBook(String bookName, String filePath) throws Exception {
 
         BookArticleBean bookArticleBean = new BookArticleBean();
         bookArticleBean.setBookName(bookName);
@@ -94,6 +94,9 @@ public class BookContentServiceImpl<main, mai> implements BookContentService {
                 BookContentBean con = bookContentUtil.getContent(chapter.getBookContentUrl());
                 /*byte[] byteArr = Base64.getDecoder().decode(con.getBytes());
                 String msg2 = new String(byteArr);*/
+                if(con == null || "".equals(con.getContent())){
+                    throw new Exception("章节信息为空");
+                }
                 FileUtil.appendStringToFile(filePath, con.getTitle());
                 FileUtil.appendStringToFile(filePath, con.getContent());
             }

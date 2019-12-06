@@ -20,5 +20,5 @@ public  interface BookContentService {
 
 	int insertContent(BookContentBean record);
 
-    void getBook(String bookName,String filePath);
+    void getBook(String bookName,String filePath) throws Exception;
 }

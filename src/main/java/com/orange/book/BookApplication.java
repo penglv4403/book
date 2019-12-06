@@ -2,11 +2,16 @@ package com.orange.book;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
 //@EnableEurekaClient
-public class BookApplication {
-
+public class BookApplication extends SpringBootServletInitializer {
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder springApplicationBuilder){
+        return springApplicationBuilder.sources(BookApplication.class);
+    }
     public static void main(String[] args) {
         SpringApplication.run(BookApplication.class, args);
     }

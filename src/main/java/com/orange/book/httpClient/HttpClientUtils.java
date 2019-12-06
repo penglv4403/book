@@ -14,13 +14,18 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 
 
-public class HttpClientUtils {
+@Service
+@Lazy
+public class HttpClientUtils implements InitializingBean {
     private static final Logger log = LoggerFactory.getLogger(HttpClientUtils.class);
 
-    public synchronized static Page sendRequstAndGetResponse(String url) {
+    public  static Page sendRequstAndGetResponse(String url) {
         HttpGet httpGet = new HttpGet(url);
         //HttpHost proxy = new HttpHost("116.209.55.39", 9999, "http");//.setProxy(proxy).
         httpGet.setConfig(RequestConfig.custom().setSocketTimeout(30000).setConnectTimeout(30000).build());
@@ -113,4 +118,8 @@ public class HttpClientUtils {
         return page;
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
+    }
 }

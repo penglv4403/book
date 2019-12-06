@@ -264,7 +264,7 @@ public class BookArticleUtil {
             String updateDate = book.getUpdateDate();
             int diffDate = 0;
             try {
-                diffDate = DateTimeUtil.diffDate(newDate, updateDate);
+                diffDate = DateTimeUtil.diffDate(updateDate,newDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }

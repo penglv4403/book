@@ -26,6 +26,7 @@ public class BookArticleController {
 
     @Autowired
     private BookContentService bookContentService;
+
     @Value("${bookPath}")
     private String bookPath;
 
@@ -50,15 +51,19 @@ public class BookArticleController {
         System.out.println(this.bookPath);
         return "2";
     }
+
     @RequestMapping("/downloadFile")
     @ResponseBody
     public String downloadFile(HttpServletRequest request, HttpServletResponse response) {
-       // String downloadFilePath = "/home/app/file/";//被下载的文件在服务器中的路径,
+        // String downloadFilePath = "/home/app/file/";//被下载的文件在服务器中的路径,
         String bookName = request.getParameter("bookName");
         String fileName = bookName + ".txt";//被下载文件的名称
-        bookPath="C:\\\\Users\\\\ME\\\\Desktop\\";
         File file = new File(bookPath + fileName);
-        bookContentService.getBook(bookName,bookPath + fileName);
+        try {
+            bookContentService.getBook(bookName, bookPath + fileName);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
         if (file.exists()) {
             response.setContentType("application/force-download");// 设置强制下载不打开
             response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
